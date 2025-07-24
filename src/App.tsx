@@ -11,6 +11,7 @@ import BlogSearch from "./pages/BlogSearch";
 import BlogPost from "./pages/BlogPost";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import AboutPage from "./pages/AboutPage";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -61,6 +62,7 @@ const App = () => {
               <Route path="/write" element={isAuthenticated ? <WriteBlog /> : <Navigate to="/login" />} />
               <Route path="/search" element={isAuthenticated ? <BlogSearch /> : <Navigate to="/login" />} />
               <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
+              <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
