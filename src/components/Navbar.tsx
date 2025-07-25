@@ -63,6 +63,11 @@ const Navbar = () => {
             {isAuthenticated && (
               <>
                 <NavigationMenuItem>
+                  <Link to="/myposts">
+                    <Button variant="ghost">My Posts</Button>
+                  </Link>
+                </NavigationMenuItem>
+                <NavigationMenuItem>
                   <span className="text-sm text-muted-foreground mr-2">
                     Hi, {username}
                   </span>
