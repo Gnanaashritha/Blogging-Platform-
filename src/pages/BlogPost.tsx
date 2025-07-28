@@ -13,16 +13,18 @@ import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogHeader } from "@/components/blog/BlogHeader";
 
 const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
-  "1": {
-    id: "1",
-    title: "The Art of Creative Writing: Finding Your Unique Voice",
-    excerpt: "Discover how to develop your unique writing style and create content that resonates with your audience.",
-    author: "Jane Austen",
-    date: "Apr 20, 2025",
-    readTime: "5 min read",
-    coverImage: "https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    tags: ["Writing", "Creativity", "Self-Improvement"],
-    fullContent: `
+    "1": {
+        id: "1",
+        title: "The Art of Creative Writing: Finding Your Unique Voice",
+        excerpt:
+            "Discover how to develop your unique writing style and create content that resonates with your audience.",
+        author: "Jane Austen",
+        date: "Apr 20, 2025",
+        readTime: "5 min read",
+        coverImage:
+            "https://images.unsplash.com/photo-1455390582262-044cdead277a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+        tags: ["Writing", "Creativity", "Self-Improvement"],
+        fullContent: `
       Finding your unique writing voice is perhaps the most important part of becoming a writer that stands out from the crowd. Your voice is your literary fingerprint—it's what makes your writing distinctively yours.
 
       ## What is a writing voice?
@@ -32,7 +34,7 @@ const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
       ## Why is finding your voice important?
 
       In a world filled with content, having a distinctive voice helps you:
-      
+
       1. **Connect with readers on a deeper level**
       2. **Stand out in a crowded marketplace**
       3. **Build a loyal readership that recognizes your work**
@@ -65,18 +67,20 @@ const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
       Finding your voice isn't something that happens overnight. It's a process of continuous exploration and refinement. Be patient with yourself, and remember that your voice will evolve as you grow as a writer and as a person.
 
       The most important thing is to keep writing, keep reading, and stay true to yourself. Your unique voice is waiting to be discovered, and the world needs to hear what only you can say.
-    `
-  },
-  "2": {
-    id: "2",
-    title: "10 Essential Tips for Blog Writing Success",
-    excerpt: "Learn the fundamental practices that can elevate your blog writing from amateur to professional.",
-    author: "Ernest Hemingway",
-    date: "Apr 18, 2025",
-    readTime: "4 min read",
-    coverImage: "https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
-    tags: ["Blogging", "Tips", "Writing"],
-    fullContent: `
+    `,
+    },
+    "2": {
+        id: "2",
+        title: "10 Essential Tips for Blog Writing Success",
+        excerpt:
+            "Learn the fundamental practices that can elevate your blog writing from amateur to professional.",
+        author: "Ernest Hemingway",
+        date: "Apr 18, 2025",
+        readTime: "4 min read",
+        coverImage:
+            "https://images.unsplash.com/photo-1499750310107-5fef28a66643?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1000&q=80",
+        tags: ["Blogging", "Tips", "Writing"],
+        fullContent: `
       Blogging has become one of the most effective ways to share information, build authority, and connect with an audience. Whether you're blogging for business or pleasure, these ten tips will help you create content that engages readers and achieves your goals.
 
       ## 1. Know Your Audience
@@ -120,107 +124,111 @@ const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
       What do you want readers to do after reading your post? Whether it's leaving a comment, sharing on social media, subscribing to your newsletter, or trying your product, end with a clear call to action.
 
       By implementing these tips consistently, you'll create blog content that not only attracts readers but keeps them coming back for more. Remember that blogging is a skill that improves with practice, so don't be discouraged if your first few posts don't meet your expectations. Keep writing, keep learning, and keep refining your approach.
-    `
-  },
+    `,
+    },
 };
 
 const BlogPost = () => {
-  const { id } = useParams<{ id: string }>();
-  const [post, setPost] = useState<(BlogPostType & { fullContent?: string }) | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-  const [likes, setLikes] = useState(0);
-  const [isLiked, setIsLiked] = useState(false);
-  
-  const storedBlogs = useBlogStore((state) => state.blogs);
+    const { id } = useParams<{ id: string }>();
+    const [post, setPost] = useState<
+        (BlogPostType & { fullContent?: string }) | null
+    >(null);
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
+    const [likes, setLikes] = useState(0);
+    const [isLiked, setIsLiked] = useState(false);
 
-  useEffect(() => {
-    const fetchPost = () => {
-      setLoading(true);
-      
-      setTimeout(() => {
-        if (!id) {
-          setError("Invalid blog ID");
-          setLoading(false);
-          return;
-        }
+    const storedBlogs = useBlogStore((state) => state.blogs);
 
-        if (mockPosts[id]) {
-          setPost(mockPosts[id]);
-          setLoading(false);
-          return;
-        }
-        
-        const userBlog = storedBlogs.find(blog => blog.id === id);
-        if (userBlog) {
-          setPost({
-            ...userBlog,
-            fullContent: userBlog.content
-          });
-          setLoading(false);
+    useEffect(() => {
+        const fetchPost = () => {
+            setLoading(true);
+
+            setTimeout(() => {
+                if (!id) {
+                    setError("Invalid blog ID");
+                    setLoading(false);
+                    return;
+                }
+
+                if (mockPosts[id]) {
+                    setPost(mockPosts[id]);
+                    setLoading(false);
+                    return;
+                }
+
+                const userBlog = storedBlogs.find((blog) => blog.id === id);
+                if (userBlog) {
+                    setPost({
+                        ...userBlog,
+                        fullContent: userBlog.content,
+                    });
+                    setLoading(false);
+                } else {
+                    setError("Blog post not found");
+                    setLoading(false);
+                }
+            }, 500);
+        };
+
+        fetchPost();
+    }, [id, storedBlogs]);
+
+    const handleLike = () => {
+        if (isLiked) {
+            setLikes((prev) => prev - 1);
+            setIsLiked(false);
+            toast.info("Removed from favorites");
         } else {
-          setError("Blog post not found");
-          setLoading(false);
+            setLikes((prev) => prev + 1);
+            setIsLiked(true);
+            toast.success("Added to favorites");
         }
-      }, 500);
     };
-    
-    fetchPost();
-  }, [id, storedBlogs]);
 
-  const handleLike = () => {
-    if (isLiked) {
-      setLikes(prev => prev - 1);
-      setIsLiked(false);
-      toast.info("Removed from favorites");
-    } else {
-      setLikes(prev => prev + 1);
-      setIsLiked(true);
-      toast.success("Added to favorites");
-    }
-  };
+    if (loading) return <BlogPostSkeleton />;
+    if (error || !post) return <BlogPostError />;
 
-  if (loading) return <BlogPostSkeleton />;
-  if (error || !post) return <BlogPostError />;
+    return (
+        <div className="flex flex-col min-h-screen page-with-navbar">
+            <Navbar />
+            <main className="flex-grow py-10">
+                <div className="container-custom max-w-4xl">
+                    <Card className="overflow-hidden shadow-lg">
+                        {post.coverImage && (
+                            <div className="w-full h-80 md:h-96">
+                                <img
+                                    src={post.coverImage}
+                                    alt={post.title}
+                                    className="w-full h-full object-cover"
+                                />
+                            </div>
+                        )}
 
-  return (
-    <div className="flex flex-col min-h-screen">
-      <Navbar />
-      <main className="flex-grow py-10">
-        <div className="container-custom max-w-4xl">
-          <Card className="overflow-hidden shadow-lg">
-            {post.coverImage && (
-              <div className="w-full h-80 md:h-96">
-                <img 
-                  src={post.coverImage} 
-                  alt={post.title} 
-                  className="w-full h-full object-cover"
-                />
-              </div>
-            )}
-            
-            <div className="p-6 md:p-10">
-              <BlogHeader
-                title={post.title}
-                author={post.author}
-                date={post.date}
-                readTime={post.readTime}
-                tags={post.tags}
-                likes={likes}
-                isLiked={isLiked}
-                onLike={handleLike}
-              />
-              
-              <Separator className="my-6" />
-              
-              <BlogContent content={post.fullContent || post.content || ''} />
-            </div>
-          </Card>
+                        <div className="p-6 md:p-10">
+                            <BlogHeader
+                                title={post.title}
+                                author={post.author}
+                                date={post.date}
+                                readTime={post.readTime}
+                                tags={post.tags}
+                                likes={likes}
+                                isLiked={isLiked}
+                                onLike={handleLike}
+                            />
+
+                            <Separator className="my-6" />
+
+                            <BlogContent
+                                content={post.fullContent || post.content || ""}
+                            />
+                        </div>
+                    </Card>
+                </div>
+            </main>
+            <Footer />
         </div>
-      </main>
-      <Footer />
-    </div>
-  );
+    );
 };
 
 export default BlogPost;
