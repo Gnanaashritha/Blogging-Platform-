@@ -1,21 +1,35 @@
 
 import React, { useContext } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { 
-  NavigationMenu, 
-  NavigationMenuList, 
-  NavigationMenuItem 
+import {
+  NavigationMenu,
+  NavigationMenuList,
+  NavigationMenuItem
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Search, BookOpen, LogOut } from "lucide-react";
 import { AuthContext } from "../App";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+
 
 const Navbar = () => {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
   const { isAuthenticated, username, logout } = useContext(AuthContext);
-  
+  const [showLogoutDialog, setShowLogoutDialog] = React.useState(false);
+
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
@@ -32,7 +46,7 @@ const Navbar = () => {
             WriteVerse
           </Link>
         </div>
-        
+
         <div className="hidden md:flex flex-1 items-center justify-center px-8">
           <form onSubmit={handleSearch} className="w-full max-w-sm">
             <div className="relative">
@@ -73,21 +87,36 @@ const Navbar = () => {
                   </span>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={logout} 
-                    title="Logout"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </Button>
+                  <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Logout"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You will need to login again to access your account.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={logout}>Logout</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                 </NavigationMenuItem>
               </>
             )}
           </NavigationMenuList>
         </NavigationMenu>
       </div>
-      
+
       <div className="md:hidden border-t">
         <form onSubmit={handleSearch} className="p-2">
           <div className="relative">
