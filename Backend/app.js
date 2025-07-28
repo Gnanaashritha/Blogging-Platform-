@@ -31,15 +31,16 @@ app.use(cors(corsOptions));
 
 
 // *--------------------- ROUTES IMPORT
-const router = require('./routes/auth.route.js')
+const authRouter = require('./routes/auth.route.js')
+const blogRouter = require('./routes/blogs.route.js')
 
 
 
 
 
 // *--------------------- ROUTES DECLARATION
-app.use('/api/auth', router)
-
+app.use('/api/auth', authRouter)
+app.use('/api/blogs', blogRouter)
 
 
 
