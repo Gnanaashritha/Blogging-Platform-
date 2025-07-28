@@ -11,6 +11,7 @@ import { BlogPostSkeleton } from "@/components/blog/BlogPostSkeleton";
 import { BlogPostError } from "@/components/blog/BlogPostError";
 import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogHeader } from "@/components/blog/BlogHeader";
+import { AuthGate } from "@/components/Auth/AuthGate";
 
 const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
   "1": {
@@ -213,7 +214,9 @@ const BlogPost = () => {
               
               <Separator className="my-6" />
               
-              <BlogContent content={post.fullContent || post.content || ''} />
+              <AuthGate triggerPercentage={50}>
+                <BlogContent content={post.fullContent || post.content || ''} />
+              </AuthGate>
             </div>
           </Card>
         </div>

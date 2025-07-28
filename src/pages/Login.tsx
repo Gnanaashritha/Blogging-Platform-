@@ -1,47 +1,46 @@
-
-import React, { useState, useContext } from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from "@/components/ui/form";
 import { toast } from "sonner";
 import { useForm } from "react-hook-form";
-import { AuthContext } from "../App";
+import { useAuth } from "@/hooks/useAuth";
+import { useNavigate } from "react-router-dom";
 import { z } from "zod";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 const loginSchema = z.object({
-  username: z.string().min(1, { message: "Username is required" }),
+  email: z.string().email({ message: "Valid email is required" }),
   password: z.string().min(1, { message: "Password is required" }),
 });
 
 const Login = () => {
-  const { login } = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
+  const { signIn, user, loading } = useAuth();
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
 
   const form = useForm<z.infer<typeof loginSchema>>({
     resolver: zodResolver(loginSchema),
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
 
-  function onSubmit(values: z.infer<typeof loginSchema>) {
-    setIsLoading(true);
-    
-    // Simulate a delay for login processing
-    setTimeout(() => {
-      const success = login(values.username, values.password);
-      
-      if (success) {
-        toast.success(`Welcome, ${values.username}!`);
-      } else {
-        toast.error("Login failed. Please check your credentials.");
-      }
-      
-      setIsLoading(false);
-    }, 1000);
+  async function onSubmit(values: z.infer<typeof loginSchema>) {
+    const { error } = await signIn(values.email, values.password);
+    if (error) {
+      toast.error(error.message);
+    } else {
+      toast.success("Welcome back!");
+      navigate('/');
+    }
   }
 
   return (
@@ -54,19 +53,19 @@ const Login = () => {
         <CardContent>
           <Form {...form}>
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              <FormField
-                control={form.control}
-                name="username"
-                render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Username</FormLabel>
-                    <FormControl>
-                      <Input placeholder="Enter your username" {...field} />
-                    </FormControl>
-                    <FormMessage />
-                  </FormItem>
-                )}
-              />
+                <FormField
+                  control={form.control}
+                  name="email"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Email</FormLabel>
+                      <FormControl>
+                        <Input type="email" placeholder="Enter your email" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
               
               <FormField
                 control={form.control}
@@ -82,15 +81,15 @@ const Login = () => {
                 )}
               />
               
-              <Button type="submit" className="w-full" disabled={isLoading}>
-                {isLoading ? "Signing in..." : "Sign In"}
+              <Button type="submit" className="w-full" disabled={loading}>
+                {loading ? "Signing in..." : "Sign In"}
               </Button>
             </form>
           </Form>
         </CardContent>
         <CardFooter className="justify-center">
           <p className="text-sm text-muted-foreground">
-            Demo app - any non-empty username and password will work
+            Create an account or sign in to access all features
           </p>
         </CardFooter>
       </Card>

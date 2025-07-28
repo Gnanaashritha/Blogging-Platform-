@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
@@ -7,12 +7,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card } from "@/components/ui/card";
 import { toast } from "@/components/ui/use-toast";
-import { AuthContext } from "../App";
+import { useAuth } from "@/hooks/useAuth";
 import { useBlogStore } from "@/store/blogStore";
 
 const WriteBlog = () => {
   const navigate = useNavigate();
-  const { username } = useContext(AuthContext);
+  const { user } = useAuth();
   const addBlog = useBlogStore((state) => state.addBlog);
   
   const [title, setTitle] = useState("");
@@ -46,7 +46,7 @@ const WriteBlog = () => {
       id: Date.now().toString(),
       title: title.trim(),
       excerpt: content.substring(0, 150) + "...",
-      author: username,
+      author: user?.email?.split('@')[0] || 'Anonymous',
       date: new Date().toLocaleDateString('en-US', { 
         year: 'numeric', 
         month: 'short', 

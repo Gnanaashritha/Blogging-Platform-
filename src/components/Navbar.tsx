@@ -1,5 +1,5 @@
 
-import React, { useContext } from "react";
+import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { 
   NavigationMenu, 
@@ -8,13 +8,14 @@ import {
 } from "@/components/ui/navigation-menu";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Search, BookOpen, LogOut } from "lucide-react";
-import { AuthContext } from "../App";
+import { Search, BookOpen, LogOut, User } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
 
 const Navbar = () => {
+  const { user, signOut } = useAuth();
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = React.useState("");
-  const { isAuthenticated, username, logout } = useContext(AuthContext);
   
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
@@ -55,34 +56,36 @@ const Navbar = () => {
                 <Button variant="ghost">Explore</Button>
               </Link>
             </NavigationMenuItem>
-            <NavigationMenuItem>
-              <Link to="/write">
-                <Button>Write</Button>
-              </Link>
-            </NavigationMenuItem>
-            {isAuthenticated && (
+            {user ? (
               <>
                 <NavigationMenuItem>
-                  <Link to="/myposts">
-                    <Button variant="ghost">My Posts</Button>
+                  <Link to="/write">
+                    <Button>Write</Button>
                   </Link>
                 </NavigationMenuItem>
                 <NavigationMenuItem>
-                  <span className="text-sm text-muted-foreground mr-2">
-                    Hi, {username}
-                  </span>
-                </NavigationMenuItem>
-                <NavigationMenuItem>
-                  <Button 
-                    variant="ghost" 
-                    size="icon" 
-                    onClick={logout} 
-                    title="Logout"
-                  >
-                    <LogOut className="h-5 w-5" />
-                  </Button>
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost">
+                        <User className="h-4 w-4 mr-2" />
+                        {user.email?.split('@')[0]}
+                      </Button>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent align="end">
+                      <DropdownMenuItem onClick={signOut}>
+                        <LogOut className="h-4 w-4 mr-2" />
+                        Sign Out
+                      </DropdownMenuItem>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
                 </NavigationMenuItem>
               </>
+            ) : (
+              <NavigationMenuItem>
+                <Link to="/login">
+                  <Button variant="outline">Login</Button>
+                </Link>
+              </NavigationMenuItem>
             )}
           </NavigationMenuList>
         </NavigationMenu>
