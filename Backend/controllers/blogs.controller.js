@@ -7,7 +7,7 @@ const cloudinary = require("../service/cloudinary.js")
 
 const createBlog = async (req, res) => {
     try {
-        const { title, description, content } = req.body;
+        const { title, description, content, tags } = req.body;
         if (!title?.trim()) return res.status(400).json({ error: "Title is required" });
         if (title.trim().length > 200) return res.status(400).json({ error: "Title too long" });
 
@@ -16,6 +16,24 @@ const createBlog = async (req, res) => {
 
         if (!content?.trim()) return res.status(400).json({ error: "Content is required" });
         if (content.trim().length > 50000) return res.status(400).json({ error: "Content too long" });
+
+        // Tags validation
+        let processedTags = [];
+        if (tags) {
+            if (!Array.isArray(tags)) {
+                return res.status(400).json({ error: "Tags must be an array" });
+            }
+
+            processedTags = tags
+                .map(tag => typeof tag === "string" ? tag.trim().toLowerCase() : null)
+                .filter(tag => tag && tag.length > 0);
+
+            if (processedTags.length > 10) {
+                return res.status(400).json({ error: "You can provide up to 10 tags only" });
+            }
+        }
+
+
 
         if (!req.file) return res.status(400).json({ error: "Cover image is required" });
 
@@ -42,6 +60,7 @@ const createBlog = async (req, res) => {
             content: content.trim(),
             coverImg: coverImgSrc,
             author: req.user.id,
+            tags: processedTags,
         });
 
         res.status(201).json({
@@ -80,6 +99,16 @@ const getAllBlogs = async (req, res) => {
             } else {
                 return res.status(400).json({ success: false, error: "Invalid author ID" });
             }
+        }
+
+        // Handle search by title, content, or tags
+        if (req.query.search) {
+            const searchRegex = new RegExp(req.query.search, "i");
+            filter.$or = [
+                { title: searchRegex },
+                { content: searchRegex },
+                { tags: searchRegex }
+            ];
         }
 
         const totalBlogs = await Blog.countDocuments(filter);
@@ -160,7 +189,7 @@ const deleteBlog = async (req, res) => {
 const editBlog = async (req, res) => {
     try {
         const { id } = req.params;
-        const { title, description, content } = req.body;
+        const { title, description, content, tags } = req.body;
 
         if (!id || !mongoose.Types.ObjectId.isValid(id)) {
             return res.status(400).json({ error: "Invalid blog ID" });
@@ -176,7 +205,7 @@ const editBlog = async (req, res) => {
             return res.status(403).json({ error: "You are not authorized to edit this blog" });
         }
 
-        // Input validations
+        // ---------------Input validations---------------
         if (title?.trim()) {
             if (title.trim().length > 200) {
                 return res.status(400).json({ error: "Title too long" });
@@ -196,6 +225,22 @@ const editBlog = async (req, res) => {
                 return res.status(400).json({ error: "Content too long" });
             }
             blog.content = content.trim();
+        }
+
+        if (tags) {
+            if (!Array.isArray(tags)) {
+                return res.status(400).json({ error: "Tags must be an array" });
+            }
+
+            const processedTags = tags
+                .map(tag => typeof tag === "string" ? tag.trim().toLowerCase() : null)
+                .filter(tag => tag && tag.length > 0);
+
+            if (processedTags.length > 10) {
+                return res.status(400).json({ error: "You can provide up to 10 tags only" });
+            }
+
+            blog.tags = processedTags;
         }
 
         // Optional image update
