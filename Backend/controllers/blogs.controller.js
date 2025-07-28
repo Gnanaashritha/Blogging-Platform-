@@ -115,6 +115,106 @@ const getBlogById = async (req, res) => {
     }
 };
 
+const deleteBlog = async (req, res) => {
+    try {
+        const { id } = req.params;
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ message: "Invalid blog ID" });
+        }
+
+        const blog = await Blog.findById(id);
+
+        if (!blog) {
+            return res.status(404).json({ message: "Blog not found" });
+        }
+
+        if (req.user.id !== blog.author.toString()) {
+            return res.status(403).json({ message: "You are not authorized to delete this blog" });
+        }
+
+        await blog.deleteOne();
+
+        res.status(200).json({ message: "Blog deleted successfully" });
+    } catch (error) {
+        console.error("Delete blog error:", error);
+        res.status(500).json({ message: "Internal server error" });
+    }
+};
+
+
+
+const editBlog = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { title, description, content } = req.body;
+
+        if (!id || !mongoose.Types.ObjectId.isValid(id)) {
+            return res.status(400).json({ error: "Invalid blog ID" });
+        }
+
+        const blog = await Blog.findById(id);
+
+        if (!blog) {
+            return res.status(404).json({ error: "Blog not found" });
+        }
+
+        if (req.user.id !== blog.author.toString()) {
+            return res.status(403).json({ error: "You are not authorized to edit this blog" });
+        }
+
+        // Input validations
+        if (title?.trim()) {
+            if (title.trim().length > 200) {
+                return res.status(400).json({ error: "Title too long" });
+            }
+            blog.title = title.trim();
+        }
+
+        if (description?.trim()) {
+            if (description.trim().length > 500) {
+                return res.status(400).json({ error: "Description too long" });
+            }
+            blog.description = description.trim();
+        }
+
+        if (content?.trim()) {
+            if (content.trim().length > 50000) {
+                return res.status(400).json({ error: "Content too long" });
+            }
+            blog.content = content.trim();
+        }
+
+        // Optional image update
+        if (req.file) {
+            const coverImg = req.file;
+            const maxFileSize = 5 * 1024 * 1024;
+            if (coverImg.size > maxFileSize) {
+                return res.status(400).json({ error: "Image exceeds 5MB limit" });
+            }
+
+            const base64Image = `data:${coverImg.mimetype};base64,${coverImg.buffer.toString("base64")}`;
+
+            try {
+                const uploadRes = await cloudinary.uploader.upload(base64Image, { folder: "blogs" });
+                blog.coverImg = uploadRes.secure_url;
+            } catch (uploadError) {
+                console.error("Cloudinary error:", uploadError);
+                return res.status(500).json({ error: "Image upload failed" });
+            }
+        }
+
+        await blog.save();
+
+        res.status(200).json({ success: true, message: "Blog updated successfully", blog });
+    } catch (error) {
+        console.error("Edit blog error:", error);
+        res.status(500).json({ error: "Internal server error" });
+    }
+};
+
+
+
 const likeBlog = async (req, res) => {
     try {
         const { id } = req.params;
@@ -195,6 +295,8 @@ module.exports = {
     createBlog,
     getAllBlogs,
     getBlogById,
+    deleteBlog,
+    editBlog,
     likeBlog,
     unlikeBlog
 }

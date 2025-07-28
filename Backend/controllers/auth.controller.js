@@ -7,13 +7,18 @@ async function handleSignup(req, res) {
     const userinfo = new User(userDetails);
     const savedUser = await userinfo.save();
 
+    const token = await handleGenerateToken(savedUser._id, savedUser.name, savedUser.email);
+
     // remove unwanted items from response
     savedUser.password = undefined;
     savedUser.createdAt = undefined;
     savedUser.updatedAt = undefined;
     savedUser.__v = undefined;
 
-    return res.status(201).json(savedUser);
+
+    return res
+      .cookie("token", token)
+      .status(201).json({ msg: "User registered successfully!", savedUser, token });
   } catch (error) {
     console.log(error)
     return res.status(500).json(error)
