@@ -12,8 +12,8 @@ const { createBlog, getAllBlogs, getBlogById, deleteBlog, editBlog, likeBlog, un
 
 // to add a blog
 router.post("/create", authMiddleware, upload.single("coverImg"), createBlog)
-router.get("/", getAllBlogs)
-router.get("/:id", getBlogById)
+router.get("/", authMiddleware, getAllBlogs)
+router.get("/:id", authMiddleware, getBlogById)
 
 router.delete("/delete/:id", authMiddleware, deleteBlog)
 router.put("/edit/:id", authMiddleware, upload.single("coverImg"), editBlog)

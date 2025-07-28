@@ -56,7 +56,6 @@ const createBlog = async (req, res) => {
     }
 }
 
-
 const getAllBlogs = async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -67,10 +66,26 @@ const getAllBlogs = async (req, res) => {
             return res.status(400).json({ success: false, error: "Invalid pagination params" });
         }
 
-        const totalBlogs = await Blog.countDocuments();
+        let filter = {};
+
+        // Handle filtering by author
+        if (req.query.author) {
+            if (req.query.author === "me") {
+                if (!req?.user?.id) {
+                    return res.status(401).json({ success: false, error: "Unauthorized" });
+                }
+                filter.author = req.user.id;
+            } else if (mongoose.Types.ObjectId.isValid(req.query.author)) {
+                filter.author = req.query.author;
+            } else {
+                return res.status(400).json({ success: false, error: "Invalid author ID" });
+            }
+        }
+
+        const totalBlogs = await Blog.countDocuments(filter);
         const totalPages = Math.ceil(totalBlogs / limit);
 
-        const blogs = await Blog.find()
+        const blogs = await Blog.find(filter)
             .sort({ createdAt: -1 })
             .skip(skip)
             .limit(limit)
@@ -142,8 +157,6 @@ const deleteBlog = async (req, res) => {
     }
 };
 
-
-
 const editBlog = async (req, res) => {
     try {
         const { id } = req.params;
@@ -213,8 +226,6 @@ const editBlog = async (req, res) => {
     }
 };
 
-
-
 const likeBlog = async (req, res) => {
     try {
         const { id } = req.params;
@@ -250,7 +261,6 @@ const likeBlog = async (req, res) => {
         res.status(500).json({ message: "Internal server error" });
     }
 };
-
 
 const unlikeBlog = async (req, res) => {
     try {
