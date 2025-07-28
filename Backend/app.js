@@ -1,18 +1,46 @@
 const express = require('express')
-require('dotenv').config()
-const connection = require('./DB/databaseConnection')
-const router = require('./routes/auth.route') 
-const dashroute = require('./routes/dashboard.route')
-const cookieparser = require('cookie-parser')
+const cookieParser = require('cookie-parser')
+const cors = require("cors")
 
 const app = express()
-connection()
 
 app.use(express.json())
-app.use(express.urlencoded({extended:true}))
-app.use(cookieparser())
+app.use(express.urlencoded({ extended: true }))
+app.use(cookieParser())
 
-app.use('/auth',router)
-app.use('/dashboard',dashroute)
+
+// ~------------------ CORS
+// CORS origin policy supporting multiple URLs from env
+const allowedOrigins = process.env.ALLOWED_CORS_ORIGINS
+    && process.env.ALLOWED_CORS_ORIGINS.split(',').map(origin => origin.trim())
+
+const corsOptions = {
+    origin: function (origin, callback) {
+        // Allow requests with no origin (like mobile apps, curl, etc.)
+        if (!origin) return callback(null, true);
+        if (allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('Not allowed by CORS'));
+        }
+    },
+    credentials: true // if you're using cookies or sessions
+};
+app.use(cors(corsOptions));
+
+
+
+// *--------------------- ROUTES IMPORT
+const router = require('./routes/auth.route.js')
+
+
+
+
+
+// *--------------------- ROUTES DECLARATION
+app.use('/api/auth', router)
+
+
+
 
 module.exports = app
