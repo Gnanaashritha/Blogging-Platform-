@@ -1,5 +1,6 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import {
     NavigationMenu,
     NavigationMenuList,
@@ -10,8 +11,25 @@ import { Input } from "@/components/ui/input";
 import { Search, BookOpen, LogOut, Menu, X } from "lucide-react";
 import { AuthContext } from "../App";
 import { useIsMobile } from "@/hooks/use-mobile";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
+
 
 const Navbar = () => {
+
+  const [showLogoutDialog, setShowLogoutDialog] = React.useState(false);
+
+  
     const navigate = useNavigate();
     const [searchQuery, setSearchQuery] = React.useState("");
     const [isScrolled, setIsScrolled] = useState(false);
@@ -37,66 +55,44 @@ const Navbar = () => {
         }
     }, [isMobile]);
 
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (searchQuery.trim()) {
-            navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
-            setIsMobileMenuOpen(false);
-        }
-    };
+   
 
     const handleLogout = () => {
         logout();
         setIsMobileMenuOpen(false);
     };
 
-    return (
-        <header
-            className={`
-        fixed top-0 left-0 right-0 z-50 border-b transition-all duration-300 ease-in-out
-        ${
-            isScrolled
-                ? "bg-background/95 backdrop-blur-md supports-[backdrop-filter]:bg-background/95 shadow-sm"
-                : "bg-background/80 backdrop-blur-sm supports-[backdrop-filter]:bg-background/60"
-        }
-      `}
-        >
-            <div className="container-custom">
-                <div className="flex h-16 items-center justify-between">
-                    {/* Logo */}
-                    <div className="flex items-center gap-3">
-                        <BookOpen className="w-7 h-7 text-primary transition-transform duration-300 hover:scale-110" />
-                        <Link
-                            to="/"
-                            className="text-xl font-bold text-foreground hover:text-primary transition-colors duration-300"
-                            onClick={() => setIsMobileMenuOpen(false)}
-                        >
-                            WriteVerse
-                        </Link>
-                    </div>
+    const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (searchQuery.trim()) {
+      navigate(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+    }
+  };
 
-                    {/* Desktop Search */}
-                    <div className="hidden lg:flex flex-1 items-center justify-center px-8">
-                        <form
-                            onSubmit={handleSearch}
-                            className="w-full max-w-md"
-                        >
-                            <div className="relative">
-                                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-                                <Input
-                                    type="search"
-                                    placeholder="Search posts..."
-                                    className="w-full pl-10 pr-4 py-2 rounded-full border-2 border-transparent bg-muted/50
-                           focus:border-primary/50 focus:bg-background transition-all duration-300
-                           hover:bg-muted/70"
-                                    value={searchQuery}
-                                    onChange={(e) =>
-                                        setSearchQuery(e.target.value)
-                                    }
-                                />
-                            </div>
-                        </form>
-                    </div>
+  return (
+    <header className="border-b bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60">
+      <div className="container-custom flex h-16 items-center justify-between">
+        <div className="flex items-center gap-2">
+          <BookOpen className="w-6 h-6" />
+          <Link to="/" className="text-xl font-bold">
+            WriteVerse
+          </Link>
+        </div>
+        
+        <div className="hidden md:flex flex-1 items-center justify-center px-8">
+          <form onSubmit={handleSearch} className="w-full max-w-sm">
+            <div className="relative">
+              <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
+              <Input
+                type="search"
+                placeholder="Search posts..."
+                className="w-full pl-8"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+          </form>
+        </div>
 
                     {/* Desktop Navigation */}
                     <div className="hidden md:block">
@@ -139,16 +135,29 @@ const Navbar = () => {
                                                 <span className="text-sm text-muted-foreground font-medium">
                                                     Hi, {username}
                                                 </span>
-                                                <Button
-                                                    variant="ghost"
-                                                    size="icon"
-                                                    onClick={logout}
-                                                    title="Logout"
-                                                    className="h-9 w-9 rounded-lg hover:bg-destructive/10 hover:text-destructive
-                                   transition-all duration-300 hover:scale-105"
-                                                >
-                                                    <LogOut className="h-4 w-4" />
-                                                </Button>
+                                                <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Logout"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You will need to login again to access your account.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={logout}>Logout</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                                             </div>
                                         </NavigationMenuItem>
                                     </>
@@ -268,16 +277,29 @@ const Navbar = () => {
                                         <span className="text-sm text-muted-foreground font-medium">
                                             Hi, {username}
                                         </span>
-                                        <Button
-                                            variant="ghost"
-                                            size="sm"
-                                            onClick={handleLogout}
-                                            className="h-8 px-3 rounded-md hover:bg-destructive/10 hover:text-destructive
-                               transition-all duration-300"
-                                        >
-                                            <LogOut className="h-4 w-4 mr-1" />
-                                            Logout
-                                        </Button>
+                                           <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
+                    <AlertDialogTrigger asChild>
+                      <Button
+                        variant="ghost"
+                        size="icon"
+                        title="Logout"
+                      >
+                        <LogOut className="h-5 w-5" />
+                      </Button>
+                    </AlertDialogTrigger>
+                    <AlertDialogContent>
+                      <AlertDialogHeader>
+                        <AlertDialogTitle>Are you sure you want to logout?</AlertDialogTitle>
+                        <AlertDialogDescription>
+                          You will need to login again to access your account.
+                        </AlertDialogDescription>
+                      </AlertDialogHeader>
+                      <AlertDialogFooter>
+                        <AlertDialogCancel>Cancel</AlertDialogCancel>
+                        <AlertDialogAction onClick={logout}>Logout</AlertDialogAction>
+                      </AlertDialogFooter>
+                    </AlertDialogContent>
+                  </AlertDialog>
                                     </div>
                                 </>
                             )}
@@ -300,8 +322,9 @@ const Navbar = () => {
                         </div>
                     </div>
                 </div>
-            </div>
+           
         </header>
+    
     );
 };
 
