@@ -123,7 +123,7 @@ const Index = () => {
                     </div>
                 </section>
 
-                {/* Recent Posts */}
+                {/* Recent Posts with 3D Hover Effect */}
                 <section className="py-12 bg-muted/30">
                     <div className="container-custom">
                         <div className="flex justify-between items-center mb-8">
@@ -134,7 +134,13 @@ const Index = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {recentPosts.map((post) => (
-                                <BlogCard key={post.id} post={post} />
+                               <div
+  key={post.id}
+  className="transform transition duration-500 hover:-translate-y-2 hover:scale-105 hover:shadow-2xl"
+>
+  <BlogCard post={post} />
+</div>
+
                             ))}
                         </div>
                     </div>
