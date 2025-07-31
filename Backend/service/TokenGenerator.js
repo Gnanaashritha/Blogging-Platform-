@@ -1,13 +1,14 @@
 const JWT = require("jsonwebtoken");
-const secret_key = process.env.SECRET_KEY;
+const jwtSecretKey = process.env.JWT_SECRET_KEY;
 
-async function handleGenerateToken(name, email) {
+async function handleGenerateToken(id, name, email) {
   const token = JWT.sign(
     {
+      id,
       name,
       email,
     },
-    secret_key,
+    jwtSecretKey,
     {expiresIn:3600}
   );
   return token
