@@ -1,4 +1,3 @@
-
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -13,7 +12,7 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AboutPage from "./pages/AboutPage";
 import MyPosts from "./pages/MyPosts";
-
+import Favourites from "./pages/Favourites";
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -66,6 +65,7 @@ const App = () => {
               <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
               <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
               <Route path="/myposts" element={isAuthenticated ? <MyPosts /> : <Navigate to="/login" />} />
+              <Route path="/favourites" element={isAuthenticated ? <Favourites /> : <Navigate to="/login" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
