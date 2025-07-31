@@ -13,6 +13,8 @@ import Login from "./pages/Login";
 import AboutPage from "./pages/AboutPage";
 import MyPosts from "./pages/MyPosts";
 import Favourites from "./pages/Favourites";
+import ScrollToTopButton from "@/components/ScrollToTopButton";
+
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -68,6 +70,21 @@ const App = () => {
               <Route path="/favourites" element={isAuthenticated ? <Favourites /> : <Navigate to="/login" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+            <div className="flex flex-col min-h-screen page-with-navbar">
+              <main className="flex-grow">
+                <Routes>
+                  <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
+                  <Route path="/" element={isAuthenticated ? <Index /> : <Navigate to="/login" />} />
+                  <Route path="/write" element={isAuthenticated ? <WriteBlog /> : <Navigate to="/login" />} />
+                  <Route path="/search" element={isAuthenticated ? <BlogSearch /> : <Navigate to="/login" />} />
+                  <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
+                  <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
+                  <Route path="/myposts" element={isAuthenticated ? <MyPosts /> : <Navigate to="/login" />} />
+                  <Route path="*" element={<NotFound />} />
+                </Routes>
+              </main>
+              <ScrollToTopButton />
+            </div>
           </BrowserRouter>
         </TooltipProvider>
       </AuthContext.Provider>
