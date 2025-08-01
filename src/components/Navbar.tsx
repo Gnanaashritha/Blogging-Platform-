@@ -131,6 +131,16 @@ const Navbar = () => {
                                             </Link>
                                         </NavigationMenuItem>
                                         <NavigationMenuItem>
+                                            <Link to="/favourites">
+                                                <Button
+                                                    variant="ghost"
+                                                    className="px-4 py-2 rounded-lg hover:bg-accent/80 transition-all duration-300 hover:scale-105"
+                                                >
+                                                    Favourites
+                                                </Button>
+                                            </Link>
+                                        </NavigationMenuItem>
+                                        <NavigationMenuItem>
                                             <div className="flex items-center gap-3 px-2">
                                                 <span className="text-sm text-muted-foreground font-medium">
                                                     Hi, {username}
@@ -270,6 +280,21 @@ const Navbar = () => {
                                             className="w-full justify-start rounded-lg hover:bg-accent/80 transition-all duration-300"
                                         >
                                             My Posts
+                                        </Button>
+                                    </Link>
+
+                                    <Link
+                                        to="/favourites"
+                                        onClick={() =>
+                                            setIsMobileMenuOpen(false)
+                                        }
+                                        className="block"
+                                    >
+                                        <Button
+                                            variant="ghost"
+                                            className="w-full justify-start rounded-lg hover:bg-accent/80 transition-all duration-300"
+                                        >
+                                            Favourites
                                         </Button>
                                     </Link>
 
