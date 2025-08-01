@@ -1,5 +1,7 @@
 import React, { useContext, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
+// fix
+import { FaUserCircle } from "react-icons/fa";
 
 import {
     NavigationMenu,
@@ -102,7 +104,8 @@ const Navbar = () => {
                                     <Link to="/search">
                                         <Button
                                             variant="ghost"
-                                            className="px-4 py-2 rounded-lg hover:bg-accent/80 transition-all duration-300 hover:scale-105"
+                                            // fix
+                                            className="px-4 py-2 rounded-lg text-black bg-transparent border-none bg-gray-100 hover:bg-primary hover:text-white transition-all duration-300"
                                         >
                                             Explore
                                         </Button>
@@ -111,8 +114,8 @@ const Navbar = () => {
                                 <NavigationMenuItem>
                                     <Link to="/write">
                                         <Button
-                                            className="px-4 py-2 rounded-lg bg-primary hover:bg-primary/90
-                               transition-all duration-300 hover:scale-105 hover:shadow-md"
+                                        // fix
+                                            className="px-4 py-2 rounded-lg text-black bg-transparent border-none bg-gray-100 hover:bg-primary hover:text-white transition-all duration-300"
                                         >
                                             Write
                                         </Button>
@@ -124,7 +127,8 @@ const Navbar = () => {
                                             <Link to="/myposts">
                                                 <Button
                                                     variant="ghost"
-                                                    className="px-4 py-2 rounded-lg hover:bg-accent/80 transition-all duration-300 hover:scale-105"
+                                                    // fix
+                                                    className="px-4 py-2 rounded-lg text-black bg-transparent border-none bg-gray-100 hover:bg-primary hover:text-white transition-all duration-300"
                                                 >
                                                     My Posts
                                                 </Button>
@@ -142,8 +146,10 @@ const Navbar = () => {
                                         </NavigationMenuItem>
                                         <NavigationMenuItem>
                                             <div className="flex items-center gap-3 px-2">
-                                                <span className="text-sm text-muted-foreground font-medium">
+                                                {/* fix */}
+                                                <span className="flex items-center gap-2 text-sm text-black">
                                                     Hi, {username}
+                                                    <FaUserCircle size={20} className="text-gray-600" />
                                                 </span>
                                                 <AlertDialog open={showLogoutDialog} onOpenChange={setShowLogoutDialog}>
                     <AlertDialogTrigger asChild>
