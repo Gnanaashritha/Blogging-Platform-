@@ -11,6 +11,7 @@ import { BlogPostSkeleton } from "@/components/blog/BlogPostSkeleton";
 import { BlogPostError } from "@/components/blog/BlogPostError";
 import { BlogContent } from "@/components/blog/BlogContent";
 import { BlogHeader } from "@/components/blog/BlogHeader";
+import CommentSystem from "@/components/blog/commentSystem";
 
 const mockPosts: Record<string, BlogPostType & { fullContent: string }> = {
     "1": {
@@ -222,6 +223,8 @@ const BlogPost = () => {
                             <BlogContent
                                 content={post.fullContent || post.content || ""}
                             />
+                            <Separator className="my-6" />
+                            <CommentSystem postId={Number(id)} />
                         </div>
                     </Card>
                 </div>
