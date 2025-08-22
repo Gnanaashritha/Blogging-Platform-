@@ -12,9 +12,12 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AboutPage from "./pages/AboutPage";
 import MyPosts from "./pages/MyPosts";
+import Explore from "./pages/Explore";
+import Help from "./pages/Help";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 import Favourites from "./pages/Favourites";
 import ScrollToTopButton from "@/components/ScrollToTopButton";
-
 
 export interface AuthContextType {
   isAuthenticated: boolean;
@@ -36,9 +39,7 @@ const App = () => {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [username, setUsername] = useState("");
 
-  // Mock authentication
   const login = (username: string, password: string) => {
-    // Simple validation - in a real app, this would validate against a backend
     if (username.trim() && password.trim()) {
       setIsAuthenticated(true);
       setUsername(username);
@@ -67,21 +68,17 @@ const App = () => {
               <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
               <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
               <Route path="/myposts" element={isAuthenticated ? <MyPosts /> : <Navigate to="/login" />} />
+              <Route path="/explore" element={isAuthenticated ? <Explore /> : <Navigate to="/login" />} />
+              <Route path="/help" element={isAuthenticated ? <Help /> : <Navigate to="/login" />} />
+              <Route path="/terms" element={isAuthenticated ? <Terms /> : <Navigate to="/login" />} />
+              <Route path="/privacy" element={isAuthenticated ? <Privacy /> : <Navigate to="/login" />} />
               <Route path="/favourites" element={isAuthenticated ? <Favourites /> : <Navigate to="/login" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
+
             <div className="flex flex-col min-h-screen page-with-navbar">
               <main className="flex-grow">
-                <Routes>
-                  <Route path="/login" element={isAuthenticated ? <Navigate to="/" /> : <Login />} />
-                  <Route path="/" element={isAuthenticated ? <Index /> : <Navigate to="/login" />} />
-                  <Route path="/write" element={isAuthenticated ? <WriteBlog /> : <Navigate to="/login" />} />
-                  <Route path="/search" element={isAuthenticated ? <BlogSearch /> : <Navigate to="/login" />} />
-                  <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
-                  <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
-                  <Route path="/myposts" element={isAuthenticated ? <MyPosts /> : <Navigate to="/login" />} />
-                  <Route path="*" element={<NotFound />} />
-                </Routes>
+                {/* You can move your routes above here and remove this second <Routes> if it's duplicated */}
               </main>
               <ScrollToTopButton />
             </div>
