@@ -1,10 +1,10 @@
-
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Heart, Share, BookOpen } from "lucide-react";
 import { toast } from "sonner";
+import { useFavouritesStore } from '../store/favouritesStore';
 
 export interface BlogPost {
   id: string;
@@ -25,17 +25,26 @@ interface BlogCardProps {
 }
 
 const BlogCard = ({ post, featured = false }: BlogCardProps) => {
+  const { favourites, addFavourite, removeFavourite } = useFavouritesStore();
+  const isFavourite = favourites.includes(post.id);
+
   const [likes, setLikes] = useState(post.likes || 0);
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(isFavourite);
+
+  useEffect(() => {
+    setIsLiked(isFavourite);
+  }, [isFavourite]);
 
   const handleLike = () => {
     if (isLiked) {
       setLikes(prev => prev - 1);
       setIsLiked(false);
+      removeFavourite(post.id);
       toast.info("Removed from favorites");
     } else {
       setLikes(prev => prev + 1);
       setIsLiked(true);
+      addFavourite(post.id);
       toast.success("Added to favorites");
     }
   };
