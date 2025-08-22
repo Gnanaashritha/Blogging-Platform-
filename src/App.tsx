@@ -13,6 +13,10 @@ import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import AboutPage from "./pages/AboutPage";
 import MyPosts from "./pages/MyPosts";
+import Explore from "./pages/Explore";
+import Help from "./pages/Help";
+import Terms from "./pages/Terms";
+import Privacy from "./pages/Privacy";
 
 
 export interface AuthContextType {
@@ -66,6 +70,10 @@ const App = () => {
               <Route path="/blog/:id" element={isAuthenticated ? <BlogPost /> : <Navigate to="/login" />} />
               <Route path="/about" element={isAuthenticated ? <AboutPage /> : <Navigate to="/login" />} />
               <Route path="/myposts" element={isAuthenticated ? <MyPosts /> : <Navigate to="/login" />} />
+              <Route path="/explore" element={isAuthenticated ? <Explore /> : <Navigate to="/login" />} />
+              <Route path="/help" element={isAuthenticated ? <Help /> : <Navigate to="/login" />} />
+<Route path="/terms" element={isAuthenticated ? <Terms /> : <Navigate to="/login" />} />
+<Route path="/privacy" element={isAuthenticated ? <Privacy /> : <Navigate to="/login" />} />
               <Route path="*" element={<NotFound />} />
             </Routes>
           </BrowserRouter>
