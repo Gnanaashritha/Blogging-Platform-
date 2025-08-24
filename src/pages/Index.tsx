@@ -81,7 +81,7 @@ const Index = () => {
         <div className="flex flex-col min-h-screen page-with-navbar">
             <Navbar />
 
-            <main className="flex-grow">
+            <main className="flex-grow"> 
                 {/* Dark Mode Toggle Button */}
                 <div className="fixed top-20 right-4 z-40">
                     <Button
@@ -134,12 +134,9 @@ const Index = () => {
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {recentPosts.map((post) => (
-                               <div
-  key={post.id}
-  className="transform transition duration-500 hover:-translate-y-2 hover:scale-105 hover:shadow-2xl"
->
-  <BlogCard post={post} />
-</div>
+                               <div key={post.id} className="transform transition duration-500 hover:-translate-y-2 hover:scale-105 hover:shadow-2xl">
+                               <BlogCard post={post} />
+                               </div>
 
                             ))}
                         </div>
